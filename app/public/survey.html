@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Survey Page</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- jquery link -->
+		<script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+		crossorigin="anonymous"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<!-- font awesome -->
+		<link rel="stylesheet" href ="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+	</head>
+	<body>
+		<div class="container">
+			<h1>Survey Questions</h1>
+			<form id='questionsForm'>
+				<h3 id="heading"><strong>About You</strong></h3>
+				<div class="form-group">
+					<label for="Name">Name (Required)</label>
+					<input type="input" class="form-control" id="name">
+				</div>
+				<div class="form-group">
+					<label for="image">Link to Photo Image (Required)</label>
+					<input type="text" class="form-control" id="photo">
+				</div>
+			</form>
+			<form id="submitForm">
+				<br>
+				<button id="submit" type="submit" class="btn btn-primary btn-lg btn-block">
+				<i class="fa fa-check-circle-o" aria-hidden="true"></i>
+				Submit
+				</button>
+			</form>
+			<!-- modal -->
+			<div id="friendModal" class="modal fade">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="modal-title">Best Meet U Match</h4>
+						</div>
+						<div id="modalBody" class="modal-body">
+							<h2 id="friendName"></h2>
+							<!-- <p>One fine body&hellip;</p> -->
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						</div>
+					</div><!-- /.modal-content -->
+				</div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+		</div>
+					<!-- javascript link-->
+
+		<script type="text/javascript">
+		$(document).ready(function() {
+			var questions = [
+				'Your mind is always buzzing with unexplored ideas and plans.',
+				'Generally speaking, you rely more on your experience than your imagination.',
+				'You find it easy to stay relaxed and focused even when there is some pressure.',
+				'You rarely do something just out of sheer curiosity.',
+				'People can rarely upset you.',
+				'It is often difficult for you to relate to other people’s feelings.',
+				'In a discussion, truth should be more important than people’s sensitivities.',
+				'You rarely get carried away by fantasies and ideas.',
+				'You think that everyone’s views should be respected regardless of whether they are supported by facts or not.',
+				'You feel more energetic after spending time with a group of people.'
+				]
+
+			for(var i = 0; i < 10; i++) {
+				var createQuestionNum = $('<h3>' + '<strong>' +'Question' + (i+1) + '</strong>' + '</h3>')
+				var createQuestions = $('<h4>' + questions[i] + '</h4>');
+
+					createQuestionNum.append(createQuestions);
+
+				var id = 'question' + (i+1);
+				var select = $('<select id=' + " " +id + " " +'class="form-control form-select"' +'>')
+					createQuestionNum.append(select);
+					select.append($('<option>' + 'Select an option' + '</option>'));
+							for(var j=1; j <= 5; j++) {
+						// var html = select.append($('<option>').text('Select an Option'));
+								switch(j) {
+									case(1):
+										html = select.append($('<option>').text(j + '(Strongly Disagree)').val(j));
+										break;
+									default:
+										html = select.append($('<option>').text(j).val(j));
+										break;
+								}
+							}
+					$('#questionsForm').append(createQuestionNum);
+			}
+		})
+
+
+		function validateForm(newUser) {
+			// checking the validity of the form for name and email address
+			var isFormValid = true;
+
+				$('.form-control').each(function() {
+					if($(this).val() === "") {
+						isFormValid = false;
+					}
+				})
+
+			// checking the validity of the form for the questions answered. if any question is not answered it will give an error
+			$('.form-select').each(function() {
+				if($(this).val() === "Select an option") {
+					isFormValid = false
+				}
+			})
+			 return isFormValid;
+		}
+
+		// on click of a submit button get all the user inputs and post them
+		$('#submit').on('click', function(event) {
+				event.preventDefault();
+
+
+
+				var newUser = {
+					name: $('#name').val(),
+					photo: $('#photo').val(),
+					scores: [
+					$('#question1').val(),
+					$('#question2').val(),
+					$('#question3').val(),
+					$('#question4').val(),
+					$('#question5').val(),
+					$('#question6').val(),
+					$('#question7').val(),
+					$('#question8').val(),
+					$('#question9').val(),
+					$('#question10').val()
+					]
+				}
+
+				if(validateForm(newUser) === true) {
+						$.post('/api/friends', newUser)
+					.done(function(data) {
+						alert('profile added');
+						$('#friendName').text(data.name);
+						var image = $('<img id="fImage">')
+						image.attr('src', data.img);
+						$('#modalBody').append(image);
+						$('#friendModal').modal('toggle');
+					})
+				}
+			});
+
+		</script>
+
+
+	</body>
+</html>

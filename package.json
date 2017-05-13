@@ -1,0 +1,26 @@
+{
+  "name": "meetuapp",
+  "version": "1.0.0",
+  "description": "an app using express and node",
+  "main": "server.js",
+  "dependencies": {
+    "mysql": "^2.11.1",
+    "express": "^4.14.0",
+    "path": "^0.12.7",
+    "body-parser": "^1.15.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Moh Kemal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "mrkem598"
+  },
+  "keywords": [
+    "root"
+  ]
+}
